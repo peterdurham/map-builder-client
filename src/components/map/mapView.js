@@ -12,7 +12,6 @@ const MapView = () => {
   const [addingLocation, setAddingLocation] = useState(false);
   const [updatingLocation, setUpdatingLocation] = useState(false)
   const [newLocation, setNewLocation] = useState({name: "", locationtype: null, notes: ""});
-  const [maps, setMaps] = useState([]);
   const [activeMap, setActiveMap] = useState(null);
   const [flyToLocation, setFlyToLocation] = useState(null);
   const [popup, setPopup] = useState(null);
@@ -23,12 +22,11 @@ const MapView = () => {
     async function fetchData() {
       const response = await getMap(id);
       setActiveMap(response.getMap);
-      console.log(response)
     }
     if (!addingLocation && !updatingLocation) {
       fetchData();
     }
-  }, [addingLocation, updatingLocation]);
+  }, [addingLocation, updatingLocation, id]);
 
   async function handleUpdateLocation(e) {
     try {
@@ -48,7 +46,7 @@ const MapView = () => {
       if (newLocation.name && newLocation.locationtype) {
 
         if (addingLocation) {
-          const response = await addLocation(
+          await addLocation(
             id,
             newLocation.name,
             newLocation.locationtype,
@@ -61,7 +59,7 @@ const MapView = () => {
           setErrors({});
         } else if (updatingLocation) {
       
-          const response = await updateLocation(
+          await updateLocation(
             id,
             newLocation.id,
             newLocation.name,

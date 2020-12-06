@@ -1,12 +1,8 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, {  useState } from "react";
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
 import ReactMapGL, { Marker, Popup, FlyToInterpolator } from "react-map-gl";
 import mapboxgl from "mapbox-gl";
 
-
-
-import AttractionsIcon from "../../images/attractions.svg";
 
 import { GiCampingTent as CampingIcon } from "react-icons/gi";
 import { MdCameraAlt as AttractionIcon } from "react-icons/md";
@@ -15,16 +11,15 @@ import { MdRestaurant as RestaurantIcon } from "react-icons/md";
 import { FaMountain as RecreationIcon } from "react-icons/fa";
 import { FiMusic as EntertainmentIcon } from "react-icons/fi";
 
-import { TiEdit as EditIcon } from "react-icons/ti";
 
-const styles = [
-  "mapbox://styles/mapbox/streets-v11",
-  "mapbox://styles/mapbox/outdoors-v11",
-  "mapbox://styles/mapbox/light-v10",
-  "mapbox://styles/mapbox/dark-v10",
-  "mapbox://styles/mapbox/satellite-v9",
-  "mapbox://styles/mapbox/satellite-streets-v11",
-];
+// const styles = [
+//   "mapbox://styles/mapbox/streets-v11",
+//   "mapbox://styles/mapbox/outdoors-v11",
+//   "mapbox://styles/mapbox/light-v10",
+//   "mapbox://styles/mapbox/dark-v10",
+//   "mapbox://styles/mapbox/satellite-v9",
+//   "mapbox://styles/mapbox/satellite-streets-v11",
+// ];
 
 const API_KEY = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -61,7 +56,7 @@ const ShareMap = ({
         transitionInterpolator: new FlyToInterpolator(),
       });
     }
-  }, [flyToLocation]);
+  }, [flyToLocation, viewport.height, viewport.width, viewport.zoom]);
 
   return (
     <MapStyles>

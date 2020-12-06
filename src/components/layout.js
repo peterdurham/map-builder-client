@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { ThemeProvider, createGlobalStyle } from "styled-components";
+import { ThemeProvider, createGlobalStyle } from "styled-components";
 
 import Nav from './nav'
 

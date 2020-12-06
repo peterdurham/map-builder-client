@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { useLocation, useHistory, Link, NavLink } from "react-router-dom";
+import { useLocation, useHistory, Link } from "react-router-dom";
 import { ApolloConsumer } from "@apollo/client";
 import { isLoggedIn, logoutUser } from "../graphql/auth";
-import { BsArrowLeft } from 'react-icons/bs'
 
 import Logo from '../images/map-builder-logo.png'
 

@@ -6,10 +6,8 @@ import PleaseSignIn from "../auth/pleaseSignIn";
 import { getMap } from "../../graphql/map";
 import ShareMapLocations from "./shareMapLocations";
 import ShareMap from "./shareMap";
-import { addLocation, updateLocation } from "../../graphql/map";
 
 const ShareMapView = () => {
-  const [maps, setMaps] = useState([]);
   const [activeMap, setActiveMap] = useState(null);
   const [flyToLocation, setFlyToLocation] = useState(null);
   const [popup, setPopup] = useState(null);
@@ -23,9 +21,7 @@ const ShareMapView = () => {
     }
 
     fetchData();
-  }, []);
-
-  console.log(activeMap);
+  }, [id]);
 
   if (!activeMap) return <div>Loading...</div>;
   else {

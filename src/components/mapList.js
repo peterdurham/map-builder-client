@@ -50,45 +50,48 @@ const MapList = () => {
             itemTypes[location.locationtype] + 1;
         });
 
-      
         return (
           <MapListItemStyles key={index}>
             <Link to={`map/${item.id}`}>
               <div>{item.name}</div>
-           
-            <div className="map-icons">
+
+              <div className="map-icons">
                 {Object.keys(itemTypes).map((key, index, array) => {
-    
-                if (itemTypes[key] > 0) {
-                  return (
-                    <span key={key} className="map-icon-count">
-                      {" "}
-                      {key === "Camping" && (
-                        <CampingIcon className="map-icon camping-icon" />
-                      )}
-                      {key === "Attraction" && (
-                        <AttractionIcon className="map-icon attraction-icon" />
-                      )}
-                      {key === "Accomodation" && (
-                        <AccomodationIcon className="map-icon accomodation-icon" />
-                      )}
-                      {key === "Restaurant" && (
-                        <RestaurantIcon className="map-icon restaurant-icon" />
-                      )}
-                      {key === "Recreation" && (
-                        <RecreationIcon className="map-icon recreation-icon" />
-                      )}
-                      {key === "Entertainment" && (
-                        <EntertainmentIcon className="map-icon entertainment-icon" />
-                      )}
-                      {itemTypes[key]} {index < array.length - 1 && (<span class="map-icon-separator">|</span>)}
-                    </span>
-                  );
-                }
-              })}
-              {item.locations.length === 0 && (<span>0 locations</span>)} 
+                  if (itemTypes[key] > 0) {
+                    return (
+                      <span key={key} className="map-icon-count">
+                        {" "}
+                        {key === "Camping" && (
+                          <CampingIcon className="map-icon camping-icon" />
+                        )}
+                        {key === "Attraction" && (
+                          <AttractionIcon className="map-icon attraction-icon" />
+                        )}
+                        {key === "Accomodation" && (
+                          <AccomodationIcon className="map-icon accomodation-icon" />
+                        )}
+                        {key === "Restaurant" && (
+                          <RestaurantIcon className="map-icon restaurant-icon" />
+                        )}
+                        {key === "Recreation" && (
+                          <RecreationIcon className="map-icon recreation-icon" />
+                        )}
+                        {key === "Entertainment" && (
+                          <EntertainmentIcon className="map-icon entertainment-icon" />
+                        )}
+                        {itemTypes[key]}{" "}
+                        {index < array.length - 1 && (
+                          <span class="map-icon-separator">|</span>
+                        )}
+                      </span>
+                    );
+                  } else {
+                    return null
+                  }
+                })}
+                {item.locations.length === 0 && <span>0 locations</span>}
               </div>
-              </Link>
+            </Link>
           </MapListItemStyles>
         );
       })}
@@ -118,11 +121,10 @@ const MapListItemStyles = styled.div`
   padding: 16px;
   margin: 8px 0;
 
-& a {
-
-  display: flex;
-  justify-content: space-between;
-}
+  & a {
+    display: flex;
+    justify-content: space-between;
+  }
 
   & .map-icons {
     display: flex;
