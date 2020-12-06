@@ -1,9 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-
-
 import "mapbox-gl/dist/mapbox-gl.css";
-
 import Layout from "./components/layout";
 
 import Login from "./components/auth/login";
@@ -13,8 +10,6 @@ import MapView from './components/map/mapView'
 import ShareMapView from './components/shareMap/shareMapView'
 
 function App() {
-
-
   return (
     <Router>
       <Layout>
