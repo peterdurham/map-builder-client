@@ -27,6 +27,7 @@ const MapListContainer = styled.div`
 
   h2 {
     margin-bottom: 16px;
+    margin-top: 20px;
     text-align: center;
   }
 `;

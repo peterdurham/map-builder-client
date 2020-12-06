@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { useHistory, Link } from "react-router-dom";
 import styled from "styled-components";
-import BackgroundImage from "../../images/home.jpg";
+import BackgroundImage from "../../images/map4-darker.jpg";
 
 import { loginUser, registerGuest } from "../../graphql/auth";
 
@@ -24,7 +24,8 @@ const Login = () => {
 
   return (
     <LoginPageStyles>
-      <LoginHeader>Build and save maps worldwide</LoginHeader>
+     
+      <LoginHeader>Build and Share Maps Online</LoginHeader>
       <LoginStyles>
         <div className="auth-login">
           <h2>Log in:</h2>
@@ -72,6 +73,7 @@ const Login = () => {
           </div>
         </div>
       </LoginStyles>
+     
     </LoginPageStyles>
   );
 };
@@ -83,6 +85,17 @@ const LoginPageStyles = styled.div`
   background-position: 50% 50%;
   margin: 0 16px;
   border-radius: 16px;
+  position: relative;
+
+  & #background-filter {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 1;
+  }
 `;
 
 const LoginHeader = styled.h1`
@@ -94,6 +107,7 @@ const LoginHeader = styled.h1`
   text-align: center;
   margin-bottom: 24px;
   padding-top: 60px;
+ 
 `;
 
 const LoginStyles = styled.div`

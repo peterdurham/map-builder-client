@@ -15,6 +15,8 @@ import { MdRestaurant as RestaurantIcon } from "react-icons/md";
 import { FaMountain as RecreationIcon } from "react-icons/fa";
 import { FiMusic as EntertainmentIcon } from "react-icons/fi";
 
+import { TiEdit as EditIcon } from "react-icons/ti";
+
 const styles = [
   "mapbox://styles/mapbox/streets-v11",
   "mapbox://styles/mapbox/outdoors-v11",
@@ -31,14 +33,18 @@ mapboxgl.accessToken = API_KEY;
 const Map = ({
   addingLocation,
   setAddingLocation,
+  updatingLocation,
+  setUpdatingLocation,
   newLocation,
   setNewLocation,
   activeMap,
-  handleAddLocation,
+  handleUpdateLocation,
   flyToLocation,
   popup,
   setPopup,
   id,
+  errors,
+  setErrors,
 }) => {
   const [viewport, setViewport] = useState({
     width: "100%",
@@ -47,15 +53,6 @@ const Map = ({
     longitude: -122.4376,
     zoom: 8,
   });
-
- 
-
-  useEffect(() => {
-    window.addEventListener("resize", () => {
-      console.log("resizing")
-    
-    })
-  }, [])
 
   React.useEffect(() => {
     if (flyToLocation) {
@@ -68,7 +65,6 @@ const Map = ({
         transitionDuration: 300,
         transitionInterpolator: new FlyToInterpolator(),
       });
-      console.log("FLY TO LOCATION", flyToLocation);
     }
   }, [flyToLocation]);
 
@@ -85,11 +81,16 @@ const Map = ({
         mapStyle={"mapbox://styles/mapbox/outdoors-v11"}
         onClick={(e) => {
           if (addingLocation && newLocation && !newLocation.lngLat) {
-            const location = { lngLat: e.lngLat };
+            const location = {
+              lngLat: e.lngLat,
+              name: "",
+              locationtype: null,
+              notes: "",
+            };
+
             setNewLocation(location);
           } else {
-            console.log("dont add location");
-            setPopup(null)
+            setPopup(null);
           }
         }}
       >
@@ -104,15 +105,7 @@ const Map = ({
             <img src="https://img.icons8.com/color/48/000000/marker.png" />
           </Marker>
         )}
-        <Marker
-          key={1}
-          offsetTop={-48}
-          offsetLeft={-24}
-          latitude={37.78}
-          longitude={-122.41}
-        >
-          <img src={AttractionsIcon} />
-        </Marker>
+
         {activeMap.locations.map((location) => {
           const { locationtype: type } = location;
 
@@ -124,25 +117,28 @@ const Map = ({
               latitude={location.lat}
               longitude={location.lng}
             >
-              <div className="marker-container" onClick={() => setPopup(location)}>
-              {type === "Camping" && (
-                <CampingIcon className="map-icon camping-icon" />
-              )}
-              {type === "Attraction" && (
-                <AttractionIcon className="map-icon attraction-icon" />
-              )}
-              {type === "Accomodation" && (
-                <AccomodationIcon className="map-icon accomodation-icon" />
-              )}
-              {type === "Restaurant" && (
-                <RestaurantIcon className="map-icon restaurant-icon" />
-              )}
-              {type === "Recreation" && (
-                <RecreationIcon className="map-icon recreation-icon" />
-              )}
-              {type === "Entertainment" && (
-                <EntertainmentIcon className="map-icon entertainment-icon" />
-              )}
+              <div
+                className="marker-container"
+                onClick={() => setPopup(location)}
+              >
+                {type === "Camping" && (
+                  <CampingIcon className="map-icon camping-icon" />
+                )}
+                {type === "Attraction" && (
+                  <AttractionIcon className="map-icon attraction-icon" />
+                )}
+                {type === "Accomodation" && (
+                  <AccomodationIcon className="map-icon accomodation-icon" />
+                )}
+                {type === "Restaurant" && (
+                  <RestaurantIcon className="map-icon restaurant-icon" />
+                )}
+                {type === "Recreation" && (
+                  <RecreationIcon className="map-icon recreation-icon" />
+                )}
+                {type === "Entertainment" && (
+                  <EntertainmentIcon className="map-icon entertainment-icon" />
+                )}
               </div>
             </Marker>
           );
@@ -157,24 +153,67 @@ const Map = ({
             anchor="top"
           >
             <NewLocation
-              handleAddLocation={handleAddLocation}
+              handleUpdateLocation={handleUpdateLocation}
               newLocation={newLocation}
               setNewLocation={setNewLocation}
               setAddingLocation={setAddingLocation}
+              setUpdatingLocation={setUpdatingLocation}
+              updatingLocation={updatingLocation}
+              errors={errors}
+              setErrors={setErrors}
             />
           </Popup>
         )}
+        {updatingLocation && (
+          <Popup
+            latitude={newLocation.lat}
+            longitude={newLocation.lng}
+            closeButton={false}
+            closeOnClick={false}
+            onClose={() => newLocation({})}
+            anchor="top"
+          >
+            <NewLocation
+              handleUpdateLocation={handleUpdateLocation}
+              newLocation={newLocation}
+              setNewLocation={setNewLocation}
+              setAddingLocation={setAddingLocation}
+              setUpdatingLocation={setUpdatingLocation}
+              updatingLocation={updatingLocation}
+              errors={errors}
+              setErrors={setErrors}
+            />
+          </Popup>
+        )}
+
         {popup && (
           <Popup
-          latitude={popup.lat}
-          longitude={popup.lng}
-          closeButton={false}
-          closeOnClick={false}
-          onClose={() => setPopup(null)}
-          anchor="top"
+            latitude={popup.lat}
+            longitude={popup.lng}
+            closeButton={false}
+            closeOnClick={false}
+            onClose={() => setPopup(null)}
+            anchor="top"
+            className="location-popup-element"
           >
-            Popup here
-            </Popup>
+            <div className="location-popup">
+              <div className="location-popup-top">
+                <h4>{popup.name}</h4>
+                <button
+                  onClick={() => {
+                    setUpdatingLocation(true);
+                    setNewLocation(popup);
+                    setPopup(null);
+                  }}
+                >
+                  <EditIcon />
+                </button>
+              </div>
+              {popup.notes && (
+                <div className="location-popup-notes">{popup.notes}</div>
+              )}
+            </div>
+          </Popup>
         )}
       </ReactMapGL>
     </MapStyles>
@@ -233,5 +272,27 @@ const MapStyles = styled.div`
   }
   .entertainment-icon {
     color: #56235d;
+  }
+  div.mapboxgl-popup-content {
+    padding: 12px 12px 18px;
+    min-width: 160px;
+    max-width: 300px;
+  }
+  .location-popup-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .location-popup-top svg {
+    transform: translateY(2px);
+  }
+  .location-popup-top button {
+    padding: 4px 8px;
+    margin-left: 16px;
+  }
+  .location-popup-notes {
+    overflow-wrap: break-word;
   }
 `;

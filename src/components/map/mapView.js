@@ -1,55 +1,86 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import styled from 'styled-components'
+import styled from "styled-components";
 
 import { getMap } from "../../graphql/map";
 import Locations from "./locations";
 import Map from "./map";
-import { addLocation } from "../../graphql/map";
+import { addLocation, updateLocation } from "../../graphql/map";
 
 const MapView = () => {
   const [addingLocation, setAddingLocation] = useState(false);
-  const [newLocation, setNewLocation] = useState({});
+  const [updatingLocation, setUpdatingLocation] = useState(false)
+  const [newLocation, setNewLocation] = useState({name: "", locationtype: null, notes: ""});
   const [maps, setMaps] = useState([]);
   const [activeMap, setActiveMap] = useState(null);
   const [flyToLocation, setFlyToLocation] = useState(null);
   const [popup, setPopup] = useState(null);
+  const [errors, setErrors] = useState({});
   let { id } = useParams();
 
- 
-
   useEffect(() => {
-    
     async function fetchData() {
       const response = await getMap(id);
       setActiveMap(response.getMap);
     }
-    if (!addingLocation) {
+    if (!addingLocation && !updatingLocation) {
       fetchData();
     }
-  }, [addingLocation]);
+  }, [addingLocation, updatingLocation]);
 
-  
-  async function handleAddLocation(e) {
+  async function handleUpdateLocation(e) {
     try {
       e.preventDefault();
 
-      const response = await addLocation(
-        id,
-        newLocation.name,
-        newLocation.locationtype,
-        newLocation.notes,
-        newLocation.lngLat[0],
-        newLocation.lngLat[1]
-      );
-        
 
-      setAddingLocation(false);
-      setNewLocation({});
+      let newErrors = {};
+
+      if (!newLocation.name) {
+        newErrors.name = "Please choose a location name";
+      }
+      if (!newLocation.locationtype) {
+        newErrors.locationtype = "Please choose a location type";
+      }
+
+
+      if (newLocation.name && newLocation.locationtype) {
+
+        if (addingLocation) {
+          const response = await addLocation(
+            id,
+            newLocation.name,
+            newLocation.locationtype,
+            newLocation.notes,
+            newLocation.lngLat[0],
+            newLocation.lngLat[1]
+          );
+          setAddingLocation(false);
+          setNewLocation({name: "", locationtype: null, notes: ""});
+          setErrors({});
+        } else if (updatingLocation) {
+      
+          const response = await updateLocation(
+            id,
+            newLocation.id,
+            newLocation.name,
+            newLocation.locationtype,
+            newLocation.notes,
+          )
+          setUpdatingLocation(false);
+          setNewLocation({name: "", locationtype: null, notes: ""});
+          setErrors({});
+        }
+
+       
+      } else {
+        setErrors(newErrors);
+      }
     } catch (e) {
       console.error(e);
     }
   }
+
+
 
   if (!activeMap) return <div>Loading...</div>;
   else {
@@ -67,14 +98,18 @@ const MapView = () => {
         <Map
           addingLocation={addingLocation}
           setAddingLocation={setAddingLocation}
+          updatingLocation={updatingLocation}
+          setUpdatingLocation={setUpdatingLocation}
           newLocation={newLocation}
           setNewLocation={setNewLocation}
           activeMap={activeMap}
-          handleAddLocation={handleAddLocation}
+          handleUpdateLocation={handleUpdateLocation}
           flyToLocation={flyToLocation}
           id={id}
           popup={popup}
           setPopup={setPopup}
+          errors={errors}
+          setErrors={setErrors}
         />
       </MapViewStyles>
     );
@@ -83,10 +118,7 @@ const MapView = () => {
 export default MapView;
 
 const MapViewStyles = styled.div`
-
   display: flex;
   width: 100vw;
   height: calc(100vh - 60px);
-
-
-`
+`;

@@ -9,18 +9,23 @@ import { FaMountain as RecreationIcon } from "react-icons/fa";
 import { FiMusic as EntertainmentIcon } from "react-icons/fi";
 
 const NewLocation = ({
-  handleAddLocation,
+  handleUpdateLocation,
   newLocation,
   setNewLocation,
   setAddingLocation,
+  setUpdatingLocation,
+  updatingLocation,
+  errors,
+  setErrors
 }) => {
   return (
     <NewLocationStyles>
       <span className="popup-header">New Location:</span>
-      <form onSubmit={handleAddLocation}>
+      <form onSubmit={handleUpdateLocation}>
         <input
           className="popup-name"
           placeholder="Name"
+          value={newLocation.name}
           onChange={(e) =>
             setNewLocation({ ...newLocation, name: e.target.value })
           }
@@ -115,6 +120,7 @@ const NewLocation = ({
         <textarea
           className="popup-notes"
           placeholder="Notes"
+          value={newLocation.notes}
           onChange={(e) =>
             setNewLocation({ ...newLocation, notes: e.target.value })
           }
@@ -123,15 +129,22 @@ const NewLocation = ({
           <button
             onClick={() => {
               setAddingLocation(false);
+              setUpdatingLocation(false);
               setNewLocation({});
+              setErrors({})
             }}
             className="secondary-button"
           >
             Cancel
           </button>
           <button type="submit" className="primary-button">
-            Confirm
+            {updatingLocation ? "Update": "Confirm"}
           </button>
+        </div>
+        <div className="form-errors">
+
+        {errors.name && (<div className="form-error">{errors.name}</div>)}
+        {errors.locationtype && (<div className="form-error">{errors.locationtype}</div>)}
         </div>
       </form>
     </NewLocationStyles>
@@ -312,5 +325,11 @@ const NewLocationStyles = styled.div`
 
   & .popup-buttons button {
     width: calc(50% - 4px);
+  }
+  & .form-errors {
+    margin-top: 8px;
+  }
+  & .form-error {
+    color: rgb(217,60,35);
   }
 `;

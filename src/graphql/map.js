@@ -26,6 +26,31 @@ export const addLocationMutation = gql`
     }
   }
 `;
+export const updateLocationMutation = gql`
+  mutation updateLocation(
+    $id: ID
+    $locationid: ID
+    $name: String
+    $locationtype: String
+    $notes: String
+  ) {
+    updateLocation(
+      id: $id
+      locationid: $locationid
+      name: $name
+      locationtype: $locationtype
+      notes: $notes
+    ) {
+      name
+      locationtype
+      notes
+      lng
+      lat
+    }
+  }
+`;
+
+
 
 export const createMapMutation = gql`
   mutation createMap($name: String) {
@@ -43,6 +68,7 @@ export const getMapsQuery = gql`
       id
       locations {
         id
+        locationtype
       }
     }
   }
@@ -69,6 +95,13 @@ export async function addLocation(id, name, locationtype, notes, lng, lat) {
   const { data } = await client.mutate({
     mutation: addLocationMutation,
     variables: { id, name, locationtype, notes, lng, lat },
+  });
+  return data;
+}
+export async function updateLocation(id, locationid, name, locationtype, notes) {
+  const { data } = await client.mutate({
+    mutation: updateLocationMutation,
+    variables: { id, locationid, name, locationtype, notes },
   });
   return data;
 }

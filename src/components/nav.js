@@ -3,13 +3,14 @@ import styled from "styled-components";
 import { useLocation, useHistory, Link, NavLink } from "react-router-dom";
 import { ApolloConsumer } from "@apollo/client";
 import { isLoggedIn, logoutUser } from "../graphql/auth";
-import {BsArrowLeft} from 'react-icons/bs'
+import { BsArrowLeft } from 'react-icons/bs'
+
+import Logo from '../images/map-builder-logo.png'
 
 const Nav = () => {
   const location = useLocation();
   const history = useHistory();
 
-  console.log(location)
   return (
     <NavbarStyles>
       {isLoggedIn() && location.pathname.includes("/map") ? (
@@ -17,7 +18,10 @@ const Nav = () => {
         <Link to="/"><span className="back-arrow">&#x2190;</span> Back to Map List</Link>
         </div>
       ) : (<div className="nav-left"></div>)}
-      <div id="title">Map Builder</div>
+      <Link to="/" id="title">
+        <img id="logo" src={Logo} alt="map logo" />
+        Map Builder
+        </Link>
       <div className="nav-right">
         {isLoggedIn() ? (
           <ApolloConsumer>
@@ -59,6 +63,11 @@ const NavbarStyles = styled.nav`
     font-size: 24px;
     display: flex;
     align-items: center;
+  }
+  #title #logo {
+    height: 40px;
+    margin-right: 8px;
+    transform: translateY(2px);
   }
   .nav-left {
     width: 138px;

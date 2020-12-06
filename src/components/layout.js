@@ -19,10 +19,10 @@ a {
   text-decoration: none;
   transition: all .3s;
 }
-a:hover {
+/* a:hover {
   color: rgb(217, 60, 35);
   
-}
+} */
 button {
   border-radius: 8px;
   border-width: 1px;

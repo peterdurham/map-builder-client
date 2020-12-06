@@ -23,7 +23,7 @@ const Locations = ({
           <button
             onClick={() => {
               setAddingLocation(false);
-              setNewLocation({});
+              setNewLocation({name: "", locationtype: null, notes: ""});
             }}
             className="secondary-button"
           >
@@ -47,8 +47,11 @@ const Locations = ({
             const { locationtype: type } = location;
             return (
               <div className="location" key={location.id} onClick={() => {
+                setAddingLocation(false)
+                setNewLocation({name: "", locationtype: null, notes: ""})
                 setFlyToLocation(location)
                 setPopup(location)
+
               }}>
                 <div>{location.name}</div>
                 <div> {type === "Camping" && (
@@ -105,6 +108,10 @@ const LocationsStyles = styled.div`
   }
   #locations .location:hover {
     background: rgb(232,233,234);
+  }
+  #locations .map-icon {
+    font-size: 20px;
+    transform: translateY(2px);
   }
   .camping-icon {
     color: #71bf43;
