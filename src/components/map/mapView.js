@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
+import PleaseSignIn from '../auth/pleaseSignIn'
 import { getMap } from "../../graphql/map";
 import Locations from "./locations";
 import Map from "./map";
@@ -22,6 +23,7 @@ const MapView = () => {
     async function fetchData() {
       const response = await getMap(id);
       setActiveMap(response.getMap);
+      console.log(response)
     }
     if (!addingLocation && !updatingLocation) {
       fetchData();
@@ -85,6 +87,7 @@ const MapView = () => {
   if (!activeMap) return <div>Loading...</div>;
   else {
     return (
+      <PleaseSignIn>
       <MapViewStyles>
         <Locations
           addingLocation={addingLocation}
@@ -111,7 +114,8 @@ const MapView = () => {
           errors={errors}
           setErrors={setErrors}
         />
-      </MapViewStyles>
+        </MapViewStyles>
+        </PleaseSignIn>
     );
   }
 };
@@ -121,4 +125,8 @@ const MapViewStyles = styled.div`
   display: flex;
   width: 100vw;
   height: calc(100vh - 60px);
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
 `;

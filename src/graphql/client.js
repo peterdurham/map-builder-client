@@ -2,7 +2,7 @@ import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { getAccessToken } from "./auth";
 
-const endpointURL = "http://localhost:4000";
+const endpointURL = "https://calm-oasis-51366.herokuapp.com/";
 // const endpointURL = "https://stark-woodland-16965.herokuapp.com";
 
 const httpLink = createHttpLink({

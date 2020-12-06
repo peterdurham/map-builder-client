@@ -57,6 +57,17 @@ export const createMapMutation = gql`
     createMap(name: $name) {
       name
       id
+      share
+    }
+  }
+`;
+
+export const shareMapMutation = gql`
+  mutation shareMap($id: ID) {
+    shareMap(id: $id) {
+      name
+      id
+      share
     }
   }
 `;
@@ -87,6 +98,7 @@ export const getMapQuery = gql`
         lng
         lat
       }
+      share
     }
   }
 `;
@@ -114,6 +126,16 @@ export async function createMap(name) {
 
   return data;
 }
+
+export async function shareMap(id) {
+  const { data } = await client.mutate({
+    mutation: shareMapMutation,
+    variables: { id },
+  });
+
+  return data;
+}
+
 
 export async function getMap(id) {
   const { data } = await client.query({

@@ -10,6 +10,7 @@ import Login from "./components/auth/login";
 import Register from "./components/auth/register";
 import Home from "./components/home";
 import MapView from './components/map/mapView'
+import ShareMapView from './components/shareMap/shareMapView'
 
 function App() {
 
@@ -29,6 +30,9 @@ function App() {
           </Route>
           <Route path="/map/:id">
             <MapView />
+          </Route>
+          <Route path="/share/:id">
+            <ShareMapView />
           </Route>
         </Switch>
       </Layout>

@@ -6,10 +6,7 @@ import { BiBed as AccomodationIcon } from "react-icons/bi";
 import { MdRestaurant as RestaurantIcon } from "react-icons/md";
 import { FaMountain as RecreationIcon } from "react-icons/fa";
 import { FiMusic as EntertainmentIcon } from "react-icons/fi";
-const Locations = ({
-  addingLocation,
-  setAddingLocation,
-  setNewLocation,
+const ShareMapLocations = ({
   mapName,
   activeMap,
   setFlyToLocation,
@@ -19,27 +16,7 @@ const Locations = ({
     <LocationsStyles>
       <header>
         <h2>{mapName}</h2>
-        {addingLocation ? (
-          <button
-            onClick={() => {
-              setAddingLocation(false);
-              setNewLocation({name: "", locationtype: null, notes: ""});
-            }}
-            className="secondary-button"
-          >
-            Cancel
-          </button>
-        ) : (
-          <button
-              onClick={() => {
-                setPopup(null)
-                setAddingLocation(true)
-              }}
-            className="secondary-button"
-          >
-            Add Location +
-          </button>
-        )}
+      
       </header>
       <div id="locations">
         {activeMap.locations &&
@@ -47,8 +24,7 @@ const Locations = ({
             const { locationtype: type } = location;
             return (
               <div className="location" key={location.id} onClick={() => {
-                setAddingLocation(false)
-                setNewLocation({name: "", locationtype: null, notes: ""})
+          
                 setFlyToLocation(location)
                 setPopup(location)
 
@@ -79,11 +55,10 @@ const Locations = ({
     </LocationsStyles>
   );
 };
-export default Locations;
+export default ShareMapLocations;
 
 const LocationsStyles = styled.div`
   width: 33%;
-
 
   & header {
     display: flex;
@@ -96,16 +71,6 @@ const LocationsStyles = styled.div`
     overflow-y: auto;
     margin: 0 16px;
   }
-  @media (max-width: 600px) {
-    width: 100%;
-
-    #locations {
-      min-height: 50%;
-      max-height: 50%;
-    }
-  }
-
-
   #locations .location {
     border: 1px solid rgb(205,209,212);
     border-radius: 4px;

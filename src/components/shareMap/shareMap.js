@@ -4,8 +4,7 @@ import { useParams } from "react-router-dom";
 import ReactMapGL, { Marker, Popup, FlyToInterpolator } from "react-map-gl";
 import mapboxgl from "mapbox-gl";
 
-import NewLocation from "./newLocation";
-import { shareMap } from "../../graphql/map";
+
 
 import AttractionsIcon from "../../images/attractions.svg";
 
@@ -16,7 +15,6 @@ import { MdRestaurant as RestaurantIcon } from "react-icons/md";
 import { FaMountain as RecreationIcon } from "react-icons/fa";
 import { FiMusic as EntertainmentIcon } from "react-icons/fi";
 
-import { FaShareSquare as ShareIcon } from "react-icons/fa";
 import { TiEdit as EditIcon } from "react-icons/ti";
 
 const styles = [
@@ -32,15 +30,10 @@ const API_KEY = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 mapboxgl.accessToken = API_KEY;
 
-const Map = ({
-  addingLocation,
-  setAddingLocation,
-  updatingLocation,
-  setUpdatingLocation,
-  newLocation,
-  setNewLocation,
+const ShareMap = ({
+  
+  
   activeMap,
-  handleUpdateLocation,
   flyToLocation,
   popup,
   setPopup,
@@ -56,8 +49,6 @@ const Map = ({
     zoom: 8,
   });
 
-  const [shareModal, setShareModal] = useState(false);
-
   React.useEffect(() => {
     if (flyToLocation) {
       setViewport({
@@ -72,36 +63,9 @@ const Map = ({
     }
   }, [flyToLocation]);
 
-  async function shareMapHandler() {
-    const response = await shareMap(activeMap.id);
-    console.log(response, "SHARING MAP", activeMap.id);
-    setShareModal(true);
-  }
-
   return (
     <MapStyles>
-      <button className="share-button" onClick={shareMapHandler}>
-        Share Map
-        <ShareIcon />
-      </button>
-      {shareModal && (
-        <>
-        <div className="share-backdrop" onClick={() => setShareModal(false)}>
-        </div>
-          <div className="share-modal">
-            <h3>Share Link:</h3>
-            <a
-              target="_blank"
-              href={"http://localhost:3000/share/" + activeMap.id}
-            >
-              {"http://localhost:3000/share/" + activeMap.id}
-            </a>
-          </div>
-          </>
-      )}
-      {addingLocation && (
-        <div id="map-message">Click the map to add a location</div>
-      )}
+     
       <ReactMapGL
         {...viewport}
         height="100%"
@@ -109,31 +73,12 @@ const Map = ({
         onViewportChange={(nextViewport) => setViewport(nextViewport)}
         mapStyle={"mapbox://styles/mapbox/outdoors-v11"}
         onClick={(e) => {
-          if (addingLocation && newLocation && !newLocation.lngLat) {
-            const location = {
-              lngLat: e.lngLat,
-              name: "",
-              locationtype: null,
-              notes: "",
-            };
-
-            setNewLocation(location);
-          } else {
+         
             setPopup(null);
-          }
+          
         }}
       >
-        {newLocation && newLocation.lngLat && (
-          <Marker
-            key={2}
-            offsetTop={-48}
-            offsetLeft={-24}
-            latitude={newLocation.lngLat[1]}
-            longitude={newLocation.lngLat[0]}
-          >
-            <img src="https://img.icons8.com/color/48/000000/marker.png" />
-          </Marker>
-        )}
+   
 
         {activeMap.locations.map((location) => {
           const { locationtype: type } = location;
@@ -172,48 +117,7 @@ const Map = ({
             </Marker>
           );
         })}
-        {addingLocation && newLocation && newLocation.lngLat && (
-          <Popup
-            latitude={newLocation.lngLat[1]}
-            longitude={newLocation.lngLat[0]}
-            closeButton={false}
-            closeOnClick={false}
-            onClose={() => newLocation({})}
-            anchor="top"
-          >
-            <NewLocation
-              handleUpdateLocation={handleUpdateLocation}
-              newLocation={newLocation}
-              setNewLocation={setNewLocation}
-              setAddingLocation={setAddingLocation}
-              setUpdatingLocation={setUpdatingLocation}
-              updatingLocation={updatingLocation}
-              errors={errors}
-              setErrors={setErrors}
-            />
-          </Popup>
-        )}
-        {updatingLocation && (
-          <Popup
-            latitude={newLocation.lat}
-            longitude={newLocation.lng}
-            closeButton={false}
-            closeOnClick={false}
-            onClose={() => newLocation({})}
-            anchor="top"
-          >
-            <NewLocation
-              handleUpdateLocation={handleUpdateLocation}
-              newLocation={newLocation}
-              setNewLocation={setNewLocation}
-              setAddingLocation={setAddingLocation}
-              setUpdatingLocation={setUpdatingLocation}
-              updatingLocation={updatingLocation}
-              errors={errors}
-              setErrors={setErrors}
-            />
-          </Popup>
-        )}
+     
 
         {popup && (
           <Popup
@@ -228,15 +132,7 @@ const Map = ({
             <div className="location-popup">
               <div className="location-popup-top">
                 <h4>{popup.name}</h4>
-                <button
-                  onClick={() => {
-                    setUpdatingLocation(true);
-                    setNewLocation(popup);
-                    setPopup(null);
-                  }}
-                >
-                  <EditIcon />
-                </button>
+               
               </div>
               {popup.notes && (
                 <div className="location-popup-notes">{popup.notes}</div>
@@ -249,19 +145,13 @@ const Map = ({
   );
 };
 
-export default Map;
+export default ShareMap;
 
 const MapStyles = styled.div`
   width: 66%;
   position: relative;
   margin-right: 16px;
   margin-bottom: 16px;
-
-  @media (max-width: 600px) {
-    width: 100%;
-    height: 50%;
-
-  }
 
   & #map-message {
     position: absolute;
@@ -277,45 +167,6 @@ const MapStyles = styled.div`
     border-style: solid;
     border-color: rgb(205, 209, 212);
     box-shadow: rgba(59, 65, 68, 0.09) 0px 17px 21px -1px;
-  }
-
-  & .share-button {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    z-index: 25;
-    display: flex;
-    align-items: center;
-  }
-  & .share-button svg {
-    margin-left: 8px;
-  }
-  & .share-backdrop {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    top: 0;
-    left: 0;
-    z-index: 100;
-  }
-  & .share-modal {
-    width: 440px;
-    height: 100px;
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    z-index: 150;
-  }
-  & .share-modal h3 {
-    margin-bottom: 10px;
-  }
-  & .share-modal a {
-    color: #1a0dab;
   }
 
   .marker-container {
